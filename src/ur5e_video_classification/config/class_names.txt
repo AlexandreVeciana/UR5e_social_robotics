@@ -1,0 +1,11 @@
+Bow
+Cross
+GoldenOrder
+HalfSun
+HandShake
+NoAction
+PointDown
+PraiseTheSun
+SideLeg
+Stop
+Wave
