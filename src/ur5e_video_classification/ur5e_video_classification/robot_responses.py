@@ -1,251 +1,182 @@
 import os
-from robodk.robolink import *
-from robodk.robomath import *
+import sys
+
+# ROS2 imports
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String
+
+# RoboDK path (host-mounted or local install)
+sys.path.append('/opt/RoboDK/Python')
+sys.path.append('/RoboDK/Python')
+
+# ─────────────────────────────────────────
+# RoboDK import (safe optional mode)
+# ─────────────────────────────────────────
+ROBODK_AVAILABLE = False
+RDK = None
+
+try:
+    from robodk.robolink import Robolink
+    from robodk.robomath import *
+
+    try:
+        # If RoboDK is running locally or accessible
+        RDK = Robolink()
+        ROBODK_AVAILABLE = True
+        print("[Robot] Connected to RoboDK")
+    except Exception as e:
+        print(f"[Robot] RoboDK not running: {e}")
+        ROBODK_AVAILABLE = False
+
+except ImportError:
+    print("[Robot] RoboDK Python API not available")
+    ROBODK_AVAILABLE = False
+
 import tkinter as tk
 from tkinter import messagebox
-# ─────────────────────────────────────────
-# Setup
-# ─────────────────────────────────────────
-
-# absolute_path = os.path.expanduser("~/ros2_ws/src/roboDK/robot_gestures.rdk")
-relative_path = "src/roboDK/Pick&Place_UR5e_students.rdk"
-absolute_path = os.path.abspath(relative_path)
-
-# Start RoboDK with the project file
-RDK = Robolink()
-RDK.AddFile(absolute_path)
-
-# Retrieve items
-robot = RDK.Item("UR5e")
-base  = RDK.Item("UR5e Base")
-tool  = RDK.Item("2FG7")
-init_target = RDK.Item("Init")
-pick_target = RDK.Item("Pick")
-table = RDK.Item("Table")
-cube = RDK.Item("cube")
-
-# Retrieve your targets (add more as you create them in RoboDK)
-
-# Example targets — create these in RoboDK and name them accordingly:
-# bow_target        = RDK.Item("Bow")
-# wave_target       = RDK.Item("Wave")
-
-# Hide the cube initially
-cube.setVisible(False)
-
-# Set cube pose and parent
-cube_pose = pick_target.Pose()
-cube.setPose(cube_pose)
-cube.setParent(table)
-
-# Robot configuration
-robot.setPoseFrame(base)
-robot.setPoseTool(tool)
-robot.setSpeed(20)
 
 
 # ─────────────────────────────────────────
-# Shared helper
+# RoboDK setup (only if available)
 # ─────────────────────────────────────────
+if ROBODK_AVAILABLE:
+    try:
+        relative_path = "src/roboDK/Pick&Place_UR5e_students.rdk"
+        absolute_path = os.path.abspath(relative_path)
 
+        RDK.AddFile(absolute_path)
+
+        robot = RDK.Item("UR5e")
+        base = RDK.Item("UR5e Base")
+        tool = RDK.Item("2FG7")
+        init_target = RDK.Item("Init")
+        pick_target = RDK.Item("Pick")
+        table = RDK.Item("Table")
+        cube = RDK.Item("cube")
+
+        cube.setVisible(False)
+
+        robot.setPoseFrame(base)
+        robot.setPoseTool(tool)
+        robot.setSpeed(20)
+
+        print("[Robot] RoboDK scene loaded")
+
+    except Exception as e:
+        print(f"[Robot] RoboDK setup failed: {e}")
+        ROBODK_AVAILABLE = False
+        robot = None
+        init_target = None
+        pick_target = None
+        cube = None
+else:
+    robot = None
+    init_target = None
+    pick_target = None
+    cube = None
+
+
+# ─────────────────────────────────────────
+# Robot primitives
+# ─────────────────────────────────────────
 def move_to_init():
-    """Return robot to home/init position."""
-    print("[Robot] Returning to Init")
-    robot.MoveL(init_target, True)
-    print("[Robot] Init reached")
-    cube.setVisible(True)
+    print("[Robot] move_to_init")
+    if ROBODK_AVAILABLE and robot and init_target:
+        robot.MoveL(init_target, True)
+    else:
+        print("[Mock] move_to_init")
 
 
-# ─────────────────────────────────────────
-# Gesture responses
-# ─────────────────────────────────────────
-
-def bow_response():
-    """
-    Response to 'Bow' gesture.
-    """
-    print("[Robot] Executing: bow_response")
-    #move_to_init()
-
-
-
-    print("[Robot] bow_response complete")
-
-
-def cross_response():
-    """
-    Response to 'Cross' gesture.
-    """
-    print("[Robot] Executing: cross_response")
-    #move_to_init()
-
-
-    print("[Robot] cross_response complete")
-
-
-def golden_order_response():
-    """
-    Response to 'GoldenOrder' gesture.
-    """
-    print("[Robot] Executing: golden_order_response")
-    #move_to_init()
-
-
-    print("[Robot] golden_order_response complete")
-
-
-def half_sun_response():
-    """
-    Response to 'HalfSun' gesture.
-    """
-    print("[Robot] Executing: half_sun_response")
-    #move_to_init()
-
-
-    print("[Robot] half_sun_response complete")
-
-
-def handshake_response():
-    """
-    Response to 'Handshake' gesture.
-    """
-    print("[Robot] Executing: handshake_response")
-    #move_to_init()
-
-
-    print("[Robot] handshake_response complete")
-
-
-def idle():
-    """
-    Response to 'NoAction' — robot stays still or returns to init.
-    """
-    print("[Robot] NoAction detected — idle")
-
-
-
-def point_down_response():
-    """
-    Response to 'PointDown' gesture.
-    """
-    print("[Robot] Executing: point_down_response")
-    main()
-
-
-    print("[Robot] point_down_response complete")
-
-
-def praise_response():
-    """
-    Response to 'PraiseTheSun' gesture.
-    """
-    print("[Robot] Executing: praise_response")
-    #move_to_init()
-
-
-    print("[Robot] praise_response complete")
-
-
-def side_leg_response():
-    """
-    Response to 'SideLeg' gesture.
-    """
-    print("[Robot] Executing: side_leg_response")
-    #move_to_init()
-
-
-    print("[Robot] side_leg_response complete")
-
-
-def stop_response():
-    """
-    Response to 'Stop' gesture.
-    """
-    print("[Robot] Executing: stop_response")
-    #move_to_init()
-
-
-    print("[Robot] stop_response complete")
+def pick_cube():
+    print("[Robot] pick_cube")
+    if ROBODK_AVAILABLE and robot and pick_target and cube:
+        robot.MoveL(pick_target, True)
+        cube.setParentStatic(tool)
+        print("[Robot] Pick done")
+    else:
+        print("[Mock] pick_cube")
 
 
 def wave_response():
-    """
-    Response to 'Wave' gesture.
-    """
-    print("[Robot] Executing: wave_response")
-    #move_to_init()
+    print("[Robot] wave_response (mock or real)")
 
 
+def stop_response():
+    print("[Robot] stop_response")
 
-    print("[Robot] wave_response complete")
+
+def idle():
+    print("[Robot] idle")
+
+
+def bow_response():
+    print("[Robot] bow_response")
 
 
 # ─────────────────────────────────────────
-# Dispatcher — called by robot_command_node
+# Command dispatcher
 # ─────────────────────────────────────────
-
 COMMAND_MAP = {
-    'bow_response':          bow_response,
-    'cross_response':        cross_response,
-    'golden_order_response': golden_order_response,
-    'half_sun_response':     half_sun_response,
-    'handshake_response':    handshake_response,
-    'idle':                  idle,
-    'point_down_response':   point_down_response,
-    'praise_response':       praise_response,
-    'side_leg_response':     side_leg_response,
-    'stop_response':         stop_response,
-    'wave_response':         wave_response,
+    "bow_response": bow_response,
+    "wave_response": wave_response,
+    "stop_response": stop_response,
+    "idle": idle,
+    "pick_cube": pick_cube,
+    "move_to_init": move_to_init,
 }
 
+
 def execute_command(command: str):
-    """
-    Execute a robot command by name.
-    Called from robot_command_node or directly for testing.
-    """
     fn = COMMAND_MAP.get(command)
     if fn:
+        print(f"[Robot] Executing: {command}")
         fn()
     else:
-        print(f"[Robot] Unknown command: '{command}' — ignoring")
+        print(f"[Robot] Unknown command: {command}")
 
-# Move to pick position and attach cube to tool
-def pick_cube():
-    print("Pick")
-    robot.MoveL(pick_target, True)
-    cube.setParentStatic(tool)
-    print("Pick FINISHED")
 
-# Main sequence
+# ─────────────────────────────────────────
+# ROS2 Node
+# ─────────────────────────────────────────
+class RobotCommandNode(Node):
+    def __init__(self):
+        super().__init__('robot_command_node')
+
+        self.subscription = self.create_subscription(
+            String,
+            'robot_command',
+            self.callback,
+            10
+        )
+
+        self.get_logger().info("RobotCommandNode ready, listening on /robot_command")
+
+    def callback(self, msg):
+        command = msg.data.strip()
+        self.get_logger().info(f"Received: {command}")
+        execute_command(command)
+
+
+# ─────────────────────────────────────────
+# Main ROS loop
+# ─────────────────────────────────────────
 def main():
-    move_to_init()
-    pick_cube()
-    move_to_init()
+    rclpy.init()
 
-# Ask user for confirmation before closing RoboDK
-def confirm_close():
-    root = tk.Tk()
-    root.withdraw()  # Hide the main window
-    response = messagebox.askquestion(
-        "Close RoboDK",
-        "Do you want to save changes before closing RoboDK?",
-        icon='question'
-    )
+    node = RobotCommandNode()
 
-    if response == 'yes':
-        RDK.Save()  # Save the current project
-        RDK.CloseRoboDK()
-        print("RoboDK saved and closed.")
-    else:
-        RDK.CloseRoboDK()
-        print("RoboDK closed without saving.")
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+
+    node.destroy_node()
+    rclpy.shutdown()
+
+
 # ─────────────────────────────────────────
-# Manual test — run individual responses
+# Entry point
 # ─────────────────────────────────────────
-
 if __name__ == "__main__":
-    move_to_init()
-    # Uncomment to test a specific response:
-    # execute_command('wave_response')
-    # execute_command('praise_response')
-    # execute_command('stop_response')
+    main()

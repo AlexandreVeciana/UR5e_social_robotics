@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  ur5e_social_robotics:
+    build: .
+    network_mode: host  # This allows direct access to host network
+    volumes:
+      - .:/root/UR5e_social_robotics
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw  # Optional: for X11 forwarding
+    environment:
+      - DISPLAY=${DISPLAY}  # Optional: for X11 forwarding
+    stdin_open: true
+    tty: true
