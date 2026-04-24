@@ -275,14 +275,14 @@ class HandPositionNode(Node):
         # Robot: X=forward, Y=left, Z=up
         
         # Transformation
-        robot_x = position_3d[2]      # Camera Z → Robot X (forward)
-        robot_y = -position_3d[0]     # Camera -X → Robot Y (left)
-        robot_z = -position_3d[1]     # Camera -Y → Robot Z (up)
+        robot_x = -position_3d[0]      # Camera -X → Robot X (forward)
+        robot_y = -position_3d[1]     # Camera -Y → Robot Y (left)
+        robot_z = position_3d[2]     # Camera z → Robot Z (up)
         
         # Offset for robot base
-        robot_x += 0.3  # Camera is 0.3m behind robot base
-        robot_y += 0.0
-        robot_z += 0.5  # Camera is 0.5m below robot base
+        robot_x += 0.0  # Camera is 0m behind robot base
+        robot_y += 0.26  #
+        robot_z += 0.11  # Camera is 0.11m above robot base
         
         # Generate command
         command = f'move_to_position,{robot_x:.3f},{robot_y:.3f},{robot_z:.3f}'

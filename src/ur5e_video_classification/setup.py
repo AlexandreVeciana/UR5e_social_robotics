@@ -27,6 +27,8 @@ setup(
         'console_scripts': [
             'video_classification_node = ur5e_video_classification.video_classification_node:main',
             'robot_command_node = ur5e_video_classification.robot_command_node:main',
+            'robot_responses = ur5e_video_classification.robot_responses:main',
+
         ],
     },
 )
