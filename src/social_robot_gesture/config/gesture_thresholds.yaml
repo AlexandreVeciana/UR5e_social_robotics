@@ -1,0 +1,11 @@
+gesture_classifier_node:
+  ros__parameters:
+    input_topic: /social_robot_perception/keypoints_json
+    output_topic: /social_robot_gesture/gesture
+    debug_topic: /social_robot_gesture/debug
+    window_size: 5
+    min_count: 3
+    min_kpt_confidence: 0.4
+    highfive_wrist_above_shoulder_px: 20.0
+    handshake_wrist_below_shoulder_px: 20.0
+    handshake_wrist_to_torso_ratio: 0.6

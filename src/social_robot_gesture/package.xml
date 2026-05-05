@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>social_robot_gesture</name>
+  <version>0.0.0</version>
+  <description>Gesture classification package for social human-robot interaction.</description>
+
+  <maintainer email="manel@example.com">manel</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+
+  <depend>rclpy</depend>
+  <depend>std_msgs</depend>
+  <depend>geometry_msgs</depend>
+
+  <exec_depend>python3</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
