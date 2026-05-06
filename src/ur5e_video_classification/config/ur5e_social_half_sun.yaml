@@ -1,0 +1,45 @@
+# ur5e_social_half_sun.yaml
+# Half Sun: arm sweeps a semicircular arc from left, up through centre,
+# down to the right — like drawing the top half of a sun.
+
+sequence:
+  - step_name: half_sun_left
+    target_xyz_mm: [360.0, 280.0, 600.0]
+    target_rpy_deg: [90.0, 0.0, 90.0]
+    seed_joints_deg: [-28.0, -90.0, 90.0, -90.0, -90.0, -28.0]
+    reference_frame: table
+    execute: true
+    max_velocity_scale: 0.14
+    max_acceleration_scale: 0.14
+    print_joints: true
+
+  - step_name: half_sun_top
+    target_xyz_mm: [340.0, 0.0, 900.0]
+    target_rpy_deg: [90.0, -40.0, 90.0]
+    seed_joints_deg: [0.0, -130.0, 65.0, -25.0, -90.0, 0.0]
+    reference_frame: table
+    execute: true
+    max_velocity_scale: 0.16
+    max_acceleration_scale: 0.16
+    print_joints: false
+
+  - step_name: half_sun_right
+    target_xyz_mm: [360.0, -280.0, 600.0]
+    target_rpy_deg: [90.0, 0.0, 90.0]
+    seed_joints_deg: [28.0, -90.0, 90.0, -90.0, -90.0, 28.0]
+    reference_frame: table
+    execute: true
+    max_velocity_scale: 0.16
+    max_acceleration_scale: 0.16
+    sleep_after: 0.5
+    print_joints: false
+
+  - step_name: home
+    target_xyz_mm: [350.0, 0.0, 500.0]
+    target_rpy_deg: [90.0, 0.0, 90.0]
+    seed_joints_deg: [0.0, -90.0, 90.0, -90.0, -90.0, 0.0]
+    reference_frame: table
+    execute: true
+    max_velocity_scale: 0.15
+    max_acceleration_scale: 0.15
+    print_joints: false

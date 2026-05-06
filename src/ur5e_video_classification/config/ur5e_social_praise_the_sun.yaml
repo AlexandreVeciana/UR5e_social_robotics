@@ -1,0 +1,45 @@
+# ur5e_social_praise_the_sun.yaml
+# Classic "Praise the Sun" gesture: arm sweeps upward and holds high,
+# tilted back, then lowers gracefully.
+
+sequence:
+  - step_name: praise_rise
+    target_xyz_mm: [350.0, -100.0, 780.0]
+    target_rpy_deg: [90.0, -20.0, 80.0]
+    seed_joints_deg: [10.0, -115.0, 75.0, -50.0, -90.0, 10.0]
+    reference_frame: table
+    execute: true
+    max_velocity_scale: 0.14
+    max_acceleration_scale: 0.14
+    print_joints: true
+
+  - step_name: praise_high
+    target_xyz_mm: [300.0, -80.0, 920.0]
+    target_rpy_deg: [90.0, -45.0, 75.0]
+    seed_joints_deg: [8.0, -130.0, 65.0, -25.0, -90.0, 8.0]
+    reference_frame: table
+    execute: true
+    max_velocity_scale: 0.10
+    max_acceleration_scale: 0.10
+    sleep_after: 1.8
+    print_joints: true
+
+  - step_name: praise_hold_mid
+    target_xyz_mm: [350.0, -100.0, 780.0]
+    target_rpy_deg: [90.0, -20.0, 80.0]
+    seed_joints_deg: [10.0, -115.0, 75.0, -50.0, -90.0, 10.0]
+    reference_frame: table
+    execute: true
+    max_velocity_scale: 0.10
+    max_acceleration_scale: 0.10
+    print_joints: false
+
+  - step_name: home
+    target_xyz_mm: [350.0, 0.0, 500.0]
+    target_rpy_deg: [90.0, 0.0, 90.0]
+    seed_joints_deg: [0.0, -90.0, 90.0, -90.0, -90.0, 0.0]
+    reference_frame: table
+    execute: true
+    max_velocity_scale: 0.15
+    max_acceleration_scale: 0.15
+    print_joints: false

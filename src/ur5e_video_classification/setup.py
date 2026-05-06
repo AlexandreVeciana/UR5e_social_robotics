@@ -20,15 +20,14 @@ setup(
     zip_safe=True,
     maintainer='AlexandreVeciana',
     maintainer_email='aveciaga7@alumnes.ub.edu',
-    description='Video classification for UR5e robot',
+    description='Video classification and social motion for UR5e robot',
     license='MIT',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
             'video_classification_node = ur5e_video_classification.video_classification_node:main',
-            'robot_command_node = ur5e_video_classification.robot_command_node:main',
-            'robot_responses = ur5e_video_classification.robot_responses:main',
-
+            'robot_command_node        = ur5e_video_classification.robot_command_node:main',
+            'ur5e_move_to_pose_exe     = ur5e_video_classification.ur5e_move_to_pose_exe:main',
         ],
     },
 )

@@ -27,8 +27,8 @@ class VideoClassificationNode(Node):
         # Parameters
         self.declare_parameter('camera_topic', '/camera/image_raw')
         self.declare_parameter('model_path', os.path.join(package_path, 'models', 'best_model.pt'))
-        self.declare_parameter('confidence_threshold', 0.7)
-        self.declare_parameter('prediction_rate', 2.0)
+        self.declare_parameter('confidence_threshold', 0.9)
+        self.declare_parameter('prediction_rate', 1.0)
         self.declare_parameter('frame_size', 112)
 
         self.camera_topic = self.get_parameter('camera_topic').value

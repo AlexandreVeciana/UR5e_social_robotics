@@ -1,0 +1,14 @@
+# ur5e_social_idle.yaml
+# Compact resting pose, slightly lower than home.
+# Triggered by NoAction to tuck the arm out of the way.
+
+sequence:
+  - step_name: idle
+    target_xyz_mm: [300.0, 0.0, 420.0]
+    target_rpy_deg: [90.0, 0.0, 90.0]
+    seed_joints_deg: [0.0, -85.0, 85.0, -90.0, -90.0, 0.0]
+    reference_frame: table
+    execute: true
+    max_velocity_scale: 0.12
+    max_acceleration_scale: 0.12
+    print_joints: true
