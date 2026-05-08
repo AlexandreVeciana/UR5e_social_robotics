@@ -21,13 +21,13 @@ def generate_launch_description():
         description='Use simulated hardware instead of real robot')
 
     launch_rviz_arg = DeclareLaunchArgument(
-        'launch_rviz', default_value='true',
+        'launch_rviz', default_value='false',
         description='Launch RViz with MoveIt')
 
     # ── Robot arguments ───────────────────────────────────────────────────────
 
     robot_ip_arg = DeclareLaunchArgument(
-        'robot_ip', default_value='192.168.1.102',
+        'robot_ip', default_value='192.168.1.4',
         description='IP address of the UR5e robot')
 
     ur_type_arg = DeclareLaunchArgument(
@@ -37,23 +37,23 @@ def generate_launch_description():
     # ── Camera arguments ──────────────────────────────────────────────────────
 
     camera_topic_arg = DeclareLaunchArgument(
-        'camera_topic', default_value='/camera/color/image_raw',
+        'camera_topic', default_value='/camera/camera/color/image_raw',
         description='Camera topic the classification node subscribes to')
 
     # ── Classification node arguments ─────────────────────────────────────────
 
     confidence_threshold_arg = DeclareLaunchArgument(
-        'confidence_threshold', default_value='0.75',
+        'confidence_threshold', default_value='0.9',
         description='Minimum CNN confidence to publish a prediction (0.0-1.0)')
 
     prediction_rate_arg = DeclareLaunchArgument(
-        'prediction_rate', default_value='5.0',
+        'prediction_rate', default_value='1.0',
         description='Inference rate in Hz')
 
     # ── Command node arguments ────────────────────────────────────────────────
 
     command_threshold_arg = DeclareLaunchArgument(
-        'command_threshold', default_value='0.75',
+        'command_threshold', default_value='0.9',
         description='Minimum confidence for robot_command_node to dispatch a motion (0.0-1.0)')
 
     stability_frames_arg = DeclareLaunchArgument(

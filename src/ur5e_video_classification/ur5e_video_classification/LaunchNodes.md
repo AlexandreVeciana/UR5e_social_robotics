@@ -9,7 +9,7 @@ source install/setup.bash
 #  UR5e driver (real hardware)
 ros2 launch ur_robot_driver ur_control.launch.py \
   ur_type:=ur5e \
-  robot_ip:=<YOUR_ROBOT_IP>
+  robot_ip:=192.168.1.4
 
 # 2. MoveIt2
 ros2 launch ur_moveit_config ur_moveit.launch.py \
@@ -81,3 +81,24 @@ ros2 launch ur5e_video_classification social_robot.launch.py \
   stability_frames:=5 \
   command_cooldown:=3.0 \
   launch_rviz:=true
+
+
+
+# FULL SYSTEM TRYOUT 1
+
+# Terminal 1 — UR driver
+ros2 launch ur_robot_driver ur_control.launch.py \
+  ur_type:=ur5e \
+  robot_ip:=192.168.1.4
+
+# Terminal 2 — MoveIt (wait for "You can start planning now!")
+ros2 launch ur_moveit_config ur_moveit.launch.py \
+  ur_type:=ur5e \
+  launch_rviz:=false
+
+# Terminal 3 — Camera
+ros2 launch realsense2_camera rs_launch.py
+
+# Terminal 4 — Full system
+ros2 launch ur5e_video_classification social_robot.launch.py \
+  robot_ip:=192.168.1.4

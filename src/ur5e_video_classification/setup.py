@@ -28,6 +28,7 @@ setup(
             'video_classification_node = ur5e_video_classification.video_classification_node:main',
             'robot_command_node        = ur5e_video_classification.robot_command_node:main',
             'ur5e_move_to_pose_exe     = ur5e_video_classification.ur5e_move_to_pose_exe:main',
+            'ur5e_move_to_joints_exe = ur5e_video_classification.ur5e_move_to_joints_exe:main',
         ],
     },
 )

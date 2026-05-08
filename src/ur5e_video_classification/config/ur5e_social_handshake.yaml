@@ -3,43 +3,65 @@
 # End-effector orientation: tool pointing forward, palm-down (rpy 90 0 90).
 
 sequence:
-  - step_name: handshake_ready
-    target_xyz_mm: [500.0, -200.0, 650.0]
-    target_rpy_deg: [90.0, 0.0, 90.0]
-    seed_joints_deg: [20.0, -70.0, 95.0, -115.0, -90.0, 20.0]
-    reference_frame: table
-    execute: true
-    max_velocity_scale: 0.12
-    max_acceleration_scale: 0.12
-    print_joints: true
-
-  - step_name: handshake_extend
-    target_xyz_mm: [630.0, -200.0, 650.0]
-    target_rpy_deg: [90.0, 0.0, 90.0]
-    seed_joints_deg: [25.0, -65.0, 100.0, -120.0, -90.0, 25.0]
-    reference_frame: table
-    execute: true
-    max_velocity_scale: 0.08
-    max_acceleration_scale: 0.08
-    sleep_after: 1.5
-    print_joints: true
-
-  - step_name: handshake_retract
-    target_xyz_mm: [500.0, -200.0, 650.0]
-    target_rpy_deg: [90.0, 0.0, 90.0]
-    seed_joints_deg: [20.0, -70.0, 95.0, -115.0, -90.0, 20.0]
-    reference_frame: table
-    execute: true
-    max_velocity_scale: 0.10
-    max_acceleration_scale: 0.10
-    print_joints: false
-
-  - step_name: home
-    target_xyz_mm: [350.0, 0.0, 500.0]
-    target_rpy_deg: [90.0, 0.0, 90.0]
-    seed_joints_deg: [0.0, -90.0, 90.0, -90.0, -90.0, 0.0]
-    reference_frame: table
-    execute: true
+  - step_name: handshake_home
+    joints_deg: [-90.0, -90.0, -90.0, -180.0, -90.0, 90.0]
     max_velocity_scale: 0.15
     max_acceleration_scale: 0.15
+    execute: true
+    print_joints: true
+
+  - step_name: handshake_ready
+    joints_deg: [-90.0, -90.0, -120.0, -145.0, -90.0, 90.0]
+    max_velocity_scale: 0.12
+    max_acceleration_scale: 0.12
+    execute: true
+    print_joints: false
+
+  - step_name: handshake_extend_1
+    joints_deg: [-90.0, -90.0, -120.0, -165.0, -90.0, 90.0]
+    max_velocity_scale: 0.08
+    max_acceleration_scale: 0.08
+    execute: true
+    print_joints: false
+
+  - step_name: handshake_retract_1
+    joints_deg: [-90.0, -90.0, -120.0, -145.0, -90.0, 90.0]
+    max_velocity_scale: 0.08
+    max_acceleration_scale: 0.08
+    execute: true
+    print_joints: false
+
+  - step_name: handshake_extend_2
+    joints_deg: [-90.0, -90.0, -120.0, -165.0, -90.0, 90.0]
+    max_velocity_scale: 0.08
+    max_acceleration_scale: 0.08
+    execute: true
+    print_joints: false
+
+  - step_name: handshake_retract_2
+    joints_deg: [-90.0, -90.0, -120.0, -145.0, -90.0, 90.0]
+    max_velocity_scale: 0.08
+    max_acceleration_scale: 0.08
+    execute: true
+    print_joints: false
+
+  - step_name: handshake_extend_3
+    joints_deg: [-90.0, -90.0, -120.0, -165.0, -90.0, 90.0]
+    max_velocity_scale: 0.08
+    max_acceleration_scale: 0.08
+    execute: true
+    print_joints: false
+
+  - step_name: handshake_retract_3
+    joints_deg: [-90.0, -90.0, -120.0, -145.0, -90.0, 90.0]
+    max_velocity_scale: 0.08
+    max_acceleration_scale: 0.08
+    execute: true
+    print_joints: false
+
+  - step_name: handshake_return
+    joints_deg: [-90.0, -90.0, -90.0, -180.0, -90.0, 90.0]
+    max_velocity_scale: 0.15
+    max_acceleration_scale: 0.15
+    execute: true
     print_joints: false
