@@ -117,7 +117,7 @@ Bring up the UR5e:
   ```
 Compute FK and move for a desired pose:
   ```bash
-  ros2 launch ur5e_kinematics_pymoveit2 ur5e_inverse_kinematics.launch.py target_xyz:="[0.0, 0.4, 0.5]" target_rpy:="[1.57, 0.0, 3.14]" seed_joints:="[1.0, -1.5, 2.0, -3.0, -1.0, 3.0]" execute:=true
+  ros2 launch ur5e_kinematics_pymoveit2 ur5e_move_to_pose_table.launch.py   target_xyz:="[-100.0, -400.0, 300.0]"   target_rpy:="[100.0, 0.0, 0.0]"
   ```
   > It is important to choose proper seed_joints to help moveit to find the desired configuration branch
 
