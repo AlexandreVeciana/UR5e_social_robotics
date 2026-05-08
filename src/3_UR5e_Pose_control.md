@@ -35,10 +35,10 @@ Instructions to install:
     ```
 - Delete some folders to sync the ws on remote github
     ```bash
-    cd ~/Desktop/ROS2_UR_manipulation_ws/src/pymoveit2
+    cd ~/Desktop/UR5e_social_robotics/src/ur5e_motion/pymoveit2
     sudo rm -rf .git
-    cd ~/Desktop/ROS2_UR_manipulation_ws
-    git rm --cached src/pymoveit2
+    cd ~/Desktop/UR5e_social_robotics
+    git rm --cached src/ur5e_motion/pymoveit2
     ```
 
 ## 2. Create the package
@@ -46,7 +46,7 @@ Instructions to install:
 In your workspace:
 
 ```bash
-cd ~/ROS2_UR_manipulation_ws/src
+cd ~/Desktop/UR5e_social_robotics/src
 
 ros2 pkg create ur5e_kinematics_pymoveit2 --build-type ament_python
 ```
@@ -56,28 +56,19 @@ This creates a Python-based ROS 2 package.
 **Build the workspace**
 
 ```bash
-cd ~/ROS2_UR_manipulation_ws
+cd ~/Desktop/UR5e_social_robotics
 colcon build
 source install/setup.bash
 ```
 
 ### Forward kinematics
 
-Bringup UR5e on Gazebo Classic for simulation:
-- UR5e robot without gripper
-  ```bash
-  ros2 launch ur_simulation_gazebo ur_sim_moveit.launch.py ur_type:=ur5e use_sim_time:=true
-  ```
-- UR5e robot with custom gripper 2FG7:
-  ```bash
-  ros2 launch ur_simulation_gazebo ur_sim_moveit.launch.py ur_type:=ur5e description_package:=my_ur_description description_file:=ur_2fg7.urdf.xacro use_sim_time:=true
-  ```
 Bringup Real UR5e robot with MoveIt:
   ```bash
   ros2 launch ur_robot_driver ur_control.launch.py ur_type:=ur5e robot_ip:=192.168.1.4 launch_rviz:=false
   ros2 launch ur_moveit_config ur_moveit.launch.py ur_type:=ur5e launch_rviz:=true
   ```
-  > Propoer controllers are automatically selected by `moveit_config` 
+  > Proper controllers are automatically selected by `moveit_config` 
 
 Compute FK and move for a given joint configuration:
 
@@ -88,13 +79,13 @@ ros2 launch ur5e_kinematics_pymoveit2 ur5e_forward_kinematics.launch.py joints:=
 ### Inverse kinematics
 
 It is important to note that:
-- POSE in roboDK is referenced to `base` frame
+- POSE in roboDK is referenced to `table` frame
 - POSE in ROS2 (Gazebo) is referenced to `base_link` frame
 
-![Gazebo_base_link](./Images/gazebo_base_link.png)
+![Gazebo_base_link](../Documentation/Images/gazebo_base_link.png)
 > This POSE corresponds to `zero_angle` in our Real robot ur5e paltform
 
-UR robots have `base_link` frame 180 deg from `base` frame, then:
+UR robots have `base_link` frame 180 deg from `table` frame, then:
 ````python
 x_ros  = -x_robodk
 y_ros  = -y_robodk
@@ -104,48 +95,40 @@ roll_ros = roll_robodk
 pitch_ros = pitch_robodk
 yaw_ros ≈ yaw_robodk + π
 ````
+**This has been taken into account in:**
+- the python node `ur5e_move_to_pose_table.py` and 
+- the `ur5e_move_to_pose_table.launch.py` launch file
 
-Bring up the UR5e:
-- On Gazebo with MoveIt:
-  ```bash
-  ros2 launch ur_simulation_gazebo ur_sim_moveit.launch.py ur_type:=ur5e use_sim_time:=true
-  ```
-- on Real UR5e robot with MoveIt:
+Bring up Real UR5e robot with MoveIt:
   ```bash
   ros2 launch ur_robot_driver ur_control.launch.py ur_type:=ur5e robot_ip:=192.168.1.4 launch_rviz:=false
   ros2 launch ur_moveit_config ur_moveit.launch.py ur_type:=ur5e launch_rviz:=true
   ```
-Compute FK and move for a desired pose:
+You can use the following commands:
+- Go to pose with actual joint states as seed:
   ```bash
-  ros2 launch ur5e_kinematics_pymoveit2 ur5e_move_to_pose_table.launch.py   target_xyz:="[-100.0, -400.0, 300.0]"   target_rpy:="[100.0, 0.0, 0.0]"
+  ros2 launch ur5e_kinematics_pymoveit2 ur5e_move_to_pose_table.launch.py \
+    target_xyz:="[-100.0, -300.0, 300.0]" \
+    target_rpy:="[90.0, 0.0, 0.0]" \
+    seed_from_joint_states:=true
+  ```
+- Go to pose with actual joint states as seed without executing the motion:
+  ```bash
+  ros2 launch ur5e_kinematics_pymoveit2 ur5e_move_to_pose_table.launch.py \
+    target_xyz:="[-100.0, -300.0, 300.0]" \
+    target_rpy:="[90.0, 0.0, 0.0]" \
+    seed_from_joint_states:=true \
+    execute:=false
+  ```
+- Go to pose with new seed_joint states as seed:
+  ```bash
+  ros2 launch ur5e_kinematics_pymoveit2 ur5e_move_to_pose_table.launch.py \
+    target_xyz:="[-100.0, -300.0, 300.0]" \
+    target_rpy:="[90.0, 0.0, 0.0]" \
+    seed_from_joint_states:=false \
+    seed_joints:="[-90.0, -90.0, 90.0, 0.0, 90.0, 0.0]"
   ```
   > It is important to choose proper seed_joints to help moveit to find the desired configuration branch
-
-### Go to Pose
-
-The minimal proposed solution is based on a node that:
-- converts the target pose into a quaternion, 
-- calls MoveIt’s /compute_ik service to get a joint solution, 
-- and then executes that joint goal with move_to_configuration()
-
-Bringup UR5e on Gazebo and MoveIt for simulation:
-
-```bash
-ros2 launch ur_simulation_gazebo ur_sim_moveit.launch.py ur_type:=ur5e use_sim_time:=true
-```
-Bringup Real UR5e robot with MoveIt:
-  ```bash
-  ros2 launch ur_robot_driver ur_control.launch.py ur_type:=ur5e robot_ip:=192.168.1.4 launch_rviz:=false
-  ros2 launch ur_moveit_config ur_moveit.launch.py ur_type:=ur5e launch_rviz:=true
-  ```
-  > Proper controllers are automatically selected by `moveit_config` 
-  
-Compute FK and move for a desired pose:
-
-```bash
-ros2 launch ur5e_kinematics_pymoveit2 ur5e_move_to_pose.launch.py target_xyz:="[-100, -400, 400]" target_rpy:="[90, -90, 0]" seed_from_joint_states:=false seed_joints:="[-90, -90, -90, -180, -90, 90]" execute:=true
-```
-> remember the reference on base_link for target_xyz and target_rpy!
 
 ### Pick and Place
 
