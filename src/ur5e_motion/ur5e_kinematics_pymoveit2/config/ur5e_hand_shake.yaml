@@ -1,0 +1,63 @@
+# ============================================================
+# UR5e Hand Shake sequence
+#
+# Pose convention:
+#   target_xyz and target_rpy are expressed in TABLE / RoboDK frame.
+#
+# Internal conversion is handled by the node when:
+#   pose_input_frame: table
+#
+# Units:
+#   target_xyz : millimeters
+#   target_rpy : degrees
+#   seed_joints: degrees
+# ============================================================
+
+common:
+  execute: true
+  group_name: ur_manipulator
+
+  # Tool frame used for IK
+  ik_link: tool0
+  # ik_link: 2fg7_tcp
+
+  pose_input_frame: table
+
+  max_velocity: 0.1
+  max_acceleration: 0.1
+
+  print_joints: true
+
+steps:
+
+  - name: home_start
+    target_xyz: [0, -400, 500]
+    target_rpy: [90, 0, 0]
+    seed_from_joint_states: false
+    seed_joints: [30, -130, 140, -180, -30, 180]
+    sleep_after: 1.0
+
+  - name: approach_handshake
+    target_xyz: [-250, -350, 300]
+    target_rpy: [90, 0, 0]
+    seed_from_joint_states: true
+    sleep_after: 1.0
+
+  - name: handshake
+    target_xyz: [-250, -350, 200]
+    target_rpy: [90, 0, 0]
+    seed_from_joint_states: true
+    sleep_after: 1.0
+
+  - name: retreat_handshake
+    target_xyz: [-250, -350, 300]
+    target_rpy: [90, 0, 0]
+    seed_from_joint_states: true
+    sleep_after: 1.0
+
+  - name: home_end
+    target_xyz: [0, -400, 500]
+    target_rpy: [90, 0, 0]
+    seed_from_joint_states: false
+    seed_joints: [30, -130, 140, -180, -30, 180]
+    sleep_after: 1.0
