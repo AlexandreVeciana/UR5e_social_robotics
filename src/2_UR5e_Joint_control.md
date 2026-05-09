@@ -11,6 +11,16 @@ The package contains two nodes:
 
 ### Forward kinematics for 1 joint target
 
+In a simulation environment:
+- Run the UR driver:
+  ```bash
+  ros2 launch ur_robot_driver ur_control.launch.py ur_type:=ur5e robot_ip:=192.168.1.4 use_fake_hardware:=true launch_rviz:=true
+  ```
+- Move the robot to a desired joint configuration: 
+  ```bash
+  ros2 launch ur5e_kinematics_control ur5e_joint_target.launch.py target_deg:="[-90.0, -90.0, -90.0, -180.0, -90.0, 90.0]" time_sec:=5.0 controller_topic:=/scaled_joint_trajectory_controller/joint_trajectory
+  ```
+  ![](../Documentation/Images/ur5e_motion/1_ur5e_control.png)
 
 In a real robot UR5e:
 - Run the UR driver:
@@ -33,5 +43,5 @@ In a real robot UR5e:
   ```
 - Move the robot to a desired joint configuration: 
   ```bash
-  ros2 launch ur5e_kinematics_control ur5e_joint_targets.launch.py controller_topic:=/scaled_joint_trajectory_controller/joint_trajectory trajectory_file:=trajectory.yaml
+  ros2 launch ur5e_kinematics_control ur5e_joint_targets.launch.py controller_topic:=/scaled_joint_trajectory_controller/joint_trajectory trajectory_file:=trajectory_handshake.yaml
   ```

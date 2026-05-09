@@ -159,7 +159,17 @@ class UR5eMoveToPoseViaIK(Node):
                 rclpy.time.Time(),
                 timeout=Duration(seconds=2.0),
             )
-            return tf2_geometry_msgs.do_transform_pose(pose_in, transform)
+
+            pose_out = PoseStamped()
+            pose_out.header.frame_id = self.planning_frame
+            pose_out.header.stamp = self.get_clock().now().to_msg()
+
+            pose_out.pose = tf2_geometry_msgs.do_transform_pose(
+                pose_in.pose,
+                transform,
+            )
+
+            return pose_out
 
         except Exception as e:
             self.get_logger().error(
@@ -167,7 +177,7 @@ class UR5eMoveToPoseViaIK(Node):
                 f"to '{self.planning_frame}': {e}"
             )
             return None
-
+            
     def _run_once(self):
         if self._done:
             return

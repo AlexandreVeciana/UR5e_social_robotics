@@ -64,7 +64,7 @@ def build_sequence(context, *args, **kwargs):
 
         node = Node(
             package="ur5e_kinematics_pymoveit2",
-            executable="ur5e_move_to_pose_exe",
+            executable="ur5e_move_to_pose_table_exe",
             name=f"ur5e_move_{step_name}",
             output="screen",
             parameters=[params],

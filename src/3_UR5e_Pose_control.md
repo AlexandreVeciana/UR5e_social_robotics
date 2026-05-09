@@ -63,6 +63,21 @@ source install/setup.bash
 
 ### Forward kinematics
 
+In a simulation environment:
+- Run the UR driver:
+  ```bash
+  ros2 launch ur_robot_driver ur_control.launch.py ur_type:=ur5e robot_ip:=192.168.1.4 use_fake_hardware:=true launch_rviz:=false
+  ````
+- Run MoveIt:
+  ```bash
+  ros2 launch ur_moveit_config ur_moveit.launch.py ur_type:=ur5e launch_rviz:=true
+  ```
+- Move the robot to a desired joint configuration: 
+  ```bash
+  ros2 launch ur5e_kinematics_pymoveit2 ur5e_forward_kinematics.launch.py joints:="[1.0, -1.57, 1.57, -3.14, -1.57, 3.14]" execute:=true
+  ```
+  ![](../Documentation/Images/ur5e_motion/2_ur5e_moveit.png)
+
 Bringup Real UR5e robot with MoveIt:
   ```bash
   ros2 launch ur_robot_driver ur_control.launch.py ur_type:=ur5e robot_ip:=192.168.1.4 launch_rviz:=false
@@ -73,7 +88,7 @@ Bringup Real UR5e robot with MoveIt:
 Compute FK and move for a given joint configuration:
 
 ```bash
-ros2 launch ur5e_kinematics_pymoveit2 ur5e_forward_kinematics.launch.py joints:="[1.0, -1.5, 2.0, -3.0, -1.0, 3.0]" execute:=true
+ros2 launch ur5e_kinematics_pymoveit2 ur5e_forward_kinematics.launch.py joints:="[1.0, -1.57, 1.57, -3.14, -1.57, 3.14]" execute:=true
 ```
 
 ### Inverse kinematics
@@ -82,7 +97,7 @@ It is important to note that:
 - POSE in roboDK is referenced to `table` frame
 - POSE in ROS2 (Gazebo) is referenced to `base_link` frame
 
-![Gazebo_base_link](../Documentation/Images/gazebo_base_link.png)
+![Gazebo_base_link](../Documentation/Images/ur5e_motion/3_gazebo_base_link.png)
 > This POSE corresponds to `zero_angle` in our Real robot ur5e paltform
 
 UR robots have `base_link` frame 180 deg from `table` frame, then:
@@ -99,9 +114,16 @@ yaw_ros ≈ yaw_robodk + π
 - the python node `ur5e_move_to_pose_table.py` and 
 - the `ur5e_move_to_pose_table.launch.py` launch file
 
-Bring up Real UR5e robot with MoveIt:
+In a **simulation** environment:
+  ```bash
+  ros2 launch ur_robot_driver ur_control.launch.py ur_type:=ur5e robot_ip:=192.168.1.4 use_fake_hardware:=true launch_rviz:=false
+
+  ros2 launch ur_moveit_config ur_moveit.launch.py ur_type:=ur5e launch_rviz:=true
+  ```
+In a **Real UR5e** robot with MoveIt:
   ```bash
   ros2 launch ur_robot_driver ur_control.launch.py ur_type:=ur5e robot_ip:=192.168.1.4 launch_rviz:=false
+  
   ros2 launch ur_moveit_config ur_moveit.launch.py ur_type:=ur5e launch_rviz:=true
   ```
 You can use the following commands:
@@ -112,14 +134,7 @@ You can use the following commands:
     target_rpy:="[90.0, 0.0, 0.0]" \
     seed_from_joint_states:=true
   ```
-- Go to pose with actual joint states as seed without executing the motion:
-  ```bash
-  ros2 launch ur5e_kinematics_pymoveit2 ur5e_move_to_pose_table.launch.py \
-    target_xyz:="[-100.0, -300.0, 300.0]" \
-    target_rpy:="[90.0, 0.0, 0.0]" \
-    seed_from_joint_states:=true \
-    execute:=false
-  ```
+  > Perhaps `/compute_ik`has not found solution because the seed is too far from the target pose. In that case, you can provide a custom seed:
 - Go to pose with new seed_joint states as seed:
   ```bash
   ros2 launch ur5e_kinematics_pymoveit2 ur5e_move_to_pose_table.launch.py \
@@ -128,6 +143,8 @@ You can use the following commands:
     seed_from_joint_states:=false \
     seed_joints:="[-90.0, -90.0, 90.0, 0.0, 90.0, 0.0]"
   ```
+  ![Gazebo_base_link](../Documentation/Images/ur5e_motion/4_ur5e_moveit2.png)
+
   > It is important to choose proper seed_joints to help moveit to find the desired configuration branch
 
 ### Pick and Place
@@ -151,5 +168,5 @@ pitch ≈ 3.10 rad (instead of π) to avoid numerical edge cases.
 - Pick and place poses are chosen close to the home posture to ensure feasibility and smooth motion.
 
   ```bash
-  ros2 launch ur5e_kinematics_pymoveit2 ur5e_pick_place.launch.py
+  ros2 launch ur5e_kinematics_pymoveit2 ur5e_hand_shake.launch.py
   ````
