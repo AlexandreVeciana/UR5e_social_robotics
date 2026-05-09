@@ -149,27 +149,27 @@ You can use the following commands:
 
   > It is important to choose proper seed_joints to help moveit to find the desired configuration branch
 
-### Pick and Place
+### Pose sequence
 
-This program is configured with:
-- The robot first moves to a known home joint configuration.
+The ur5e_pose_sequence_simple node executes a sequence of robot poses defined in a YAML file.
 
-- Each pick-and-place step is defined as a target pose (position + orientation).
+For each step, the node:
 
-- For every pose:
+- Reads the target pose from the YAML file
+(target_xyz and target_rpy)
+- Converts:
+  - millimeters → meters
+  - degrees → radians
+- Creates a 3D pose (PoseStamped)
+- Transforms the pose from the table frame to the base_link frame using TF
+- Uses inverse kinematics (IK) to compute the UR5e joint angles required to reach that pose
+- Uses the current robot joint state as IK seed when possible, so the solution stays close to the current configuration
+- Normalizes joint angles to avoid unnecessary full wrist rotations
+- Sends the joint trajectory directly to the trajectory controller
+- Waits until the motion is finished
+- Executes the next pose in the sequence
 
-  - MoveIt’s /compute_ik service is called to compute joint angles.
-
-  - The solution is seeded with joints close to the current posture to keep the same IK branch.
-
-  - The joint goal is executed with move_to_configuration().
-
-- The tool orientation is set to look downwards using
-pitch ≈ 3.10 rad (instead of π) to avoid numerical edge cases.
-
-- Pick and place poses are chosen close to the home posture to ensure feasibility and smooth motion.
-
+As a first exemple we can execute the handshake sequence defined in `handshake.yaml`:
   ```bash
-  ros2 launch ur5e_kinematics_pymoveit2 ur5e_pose_sequence_simple.launch.py \
-  sequence_file:=handshake.yaml
-  ````
+  ros2 launch ur5e_kinematics_pymoveit2 ur5e_pose_sequence_simple.launch.py sequence_file:=handshake.yaml
+  ```
