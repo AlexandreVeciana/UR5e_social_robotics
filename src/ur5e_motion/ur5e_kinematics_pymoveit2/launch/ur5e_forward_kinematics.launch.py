@@ -1,6 +1,6 @@
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node
 
 
@@ -8,9 +8,18 @@ def generate_launch_description():
 
     joints = DeclareLaunchArgument(
         "joints",
-        default_value="[-1.0, -1.5, 2.0, 1.5, -1.0, 0.0]",
-        description="Target joint configuration [rad] in UR5e order",
+        default_value="[0.0, -90.0, 90.0, -90.0, -90.0, 0.0]",
+        description="Target joint configuration [deg] in UR5e order",
     )
+
+    # ------------------------------------------------------------
+    # Convert degrees -> radians
+    # ------------------------------------------------------------
+    joints_rad = PythonExpression([
+        "[x*3.141592653589793/180.0 for x in ",
+        LaunchConfiguration("joints"),
+        "]"
+    ])
 
     group_name = DeclareLaunchArgument(
         "group_name",
@@ -54,7 +63,7 @@ def generate_launch_description():
         output="screen",
         parameters=[
             {
-                "joints": LaunchConfiguration("joints"),
+                "joints": joints_rad,
                 "group_name": LaunchConfiguration("group_name"),
                 "base_link": LaunchConfiguration("base_link"),
                 "ee_link": LaunchConfiguration("ee_link"),

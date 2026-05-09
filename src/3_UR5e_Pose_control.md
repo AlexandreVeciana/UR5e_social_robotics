@@ -74,7 +74,8 @@ In a simulation environment:
   ```
 - Move the robot to a desired joint configuration: 
   ```bash
-  ros2 launch ur5e_kinematics_pymoveit2 ur5e_forward_kinematics.launch.py joints:="[1.0, -1.57, 1.57, -3.14, -1.57, 3.14]" execute:=true
+  ros2 launch ur5e_kinematics_pymoveit2 ur5e_forward_kinematics.launch.py \
+  joints:="[0.0, -90.0, 90.0, -90.0, -90.0, 0.0]"
   ```
   ![](../Documentation/Images/ur5e_motion/2_ur5e_moveit.png)
 
@@ -88,7 +89,8 @@ Bringup Real UR5e robot with MoveIt:
 Compute FK and move for a given joint configuration:
 
 ```bash
-ros2 launch ur5e_kinematics_pymoveit2 ur5e_forward_kinematics.launch.py joints:="[1.0, -1.57, 1.57, -3.14, -1.57, 3.14]" execute:=true
+ros2 launch ur5e_kinematics_pymoveit2 ur5e_forward_kinematics.launch.py \
+  joints:="[0.0, -90.0, 90.0, -90.0, -90.0, 0.0]"
 ```
 
 ### Inverse kinematics
@@ -168,5 +170,6 @@ pitch ≈ 3.10 rad (instead of π) to avoid numerical edge cases.
 - Pick and place poses are chosen close to the home posture to ensure feasibility and smooth motion.
 
   ```bash
-  ros2 launch ur5e_kinematics_pymoveit2 ur5e_hand_shake.launch.py
+  ros2 launch ur5e_kinematics_pymoveit2 ur5e_pose_sequence_simple.launch.py \
+  sequence_file:=handshake.yaml
   ````
