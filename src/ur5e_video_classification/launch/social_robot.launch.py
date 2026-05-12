@@ -22,7 +22,7 @@ def generate_launch_description():
 
     launch_rviz_arg = DeclareLaunchArgument(
         'launch_rviz', default_value='false',
-        description='Launch RViz with MoveIt')
+        description='Launch RViz')
 
     # ── Robot arguments ───────────────────────────────────────────────────────
 
@@ -33,6 +33,11 @@ def generate_launch_description():
     ur_type_arg = DeclareLaunchArgument(
         'ur_type', default_value='ur5e',
         description='UR robot type')
+
+    controller_topic_arg = DeclareLaunchArgument(
+        'controller_topic',
+        default_value='/joint_trajectory_controller/joint_trajectory',
+        description='JointTrajectoryController topic the robot listens on')
 
     # ── Camera arguments ──────────────────────────────────────────────────────
 
@@ -68,7 +73,9 @@ def generate_launch_description():
         'ignore_no_action', default_value='true',
         description='Skip idle sequence when NoAction is predicted')
 
-    # ── UR Driver (real hardware only) ────────────────────────────────────────
+    # ── UR Driver ─────────────────────────────────────────────────────────────
+    # Brings up the hardware interface and joint_trajectory_controller.
+    # Skipped when use_fake_hardware:=true (controller comes up on its own).
 
     ur_control = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
@@ -78,51 +85,11 @@ def generate_launch_description():
             ])
         ]),
         launch_arguments={
-            'ur_type':            LaunchConfiguration('ur_type'),
-            'robot_ip':           LaunchConfiguration('robot_ip'),
-            'launch_rviz':        'false',
+            'ur_type':      LaunchConfiguration('ur_type'),
+            'robot_ip':     LaunchConfiguration('robot_ip'),
+            'launch_rviz':  LaunchConfiguration('launch_rviz'),
         }.items(),
         condition=UnlessCondition(LaunchConfiguration('use_fake_hardware')),
-    )
-
-    # ── MoveIt2 ───────────────────────────────────────────────────────────────
-    # Delayed 5s on real hardware to give the driver time to connect.
-    # No delay needed in simulation.
-
-    moveit_real = TimerAction(
-        period=5.0,
-        actions=[
-            LogInfo(msg='Starting MoveIt2...'),
-            IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([
-                    PathJoinSubstitution([
-                        FindPackageShare('ur_moveit_config'),
-                        'launch', 'ur_moveit.launch.py'
-                    ])
-                ]),
-                launch_arguments={
-                    'ur_type':            LaunchConfiguration('ur_type'),
-                    'use_fake_hardware':  'false',
-                    'launch_rviz':        LaunchConfiguration('launch_rviz'),
-                }.items(),
-            ),
-        ],
-        condition=UnlessCondition(LaunchConfiguration('use_fake_hardware')),
-    )
-
-    moveit_sim = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            PathJoinSubstitution([
-                FindPackageShare('ur_moveit_config'),
-                'launch', 'ur_moveit.launch.py'
-            ])
-        ]),
-        launch_arguments={
-            'ur_type':            LaunchConfiguration('ur_type'),
-            'use_fake_hardware':  'true',
-            'launch_rviz':        LaunchConfiguration('launch_rviz'),
-        }.items(),
-        condition=IfCondition(LaunchConfiguration('use_fake_hardware')),
     )
 
     # ── Camera ────────────────────────────────────────────────────────────────
@@ -138,14 +105,16 @@ def generate_launch_description():
             'enable_color': 'true',
             'enable_depth': 'true',
         }.items(),
+        condition=UnlessCondition(LaunchConfiguration('use_fake_hardware')),
     )
 
     # ── Classification node ───────────────────────────────────────────────────
-    # Delayed 15s to allow MoveIt to fully load before predictions start
-    # flowing and potentially triggering motion commands.
+    # Delayed 8s to allow the UR driver and controller to finish initialising
+    # before predictions start flowing.
+    # (Was 15s previously to wait for MoveIt2 — no longer needed.)
 
     classification_node = TimerAction(
-        period=15.0,
+        period=8.0,
         actions=[
             LogInfo(msg='Starting video classification node...'),
             Node(
@@ -163,11 +132,10 @@ def generate_launch_description():
     )
 
     # ── Robot command node ────────────────────────────────────────────────────
-    # Same 15s delay — must not start accepting predictions before
-    # MoveIt's /compute_ik service is available.
+    # Same 8s delay. Publishes JointTrajectory directly — no MoveIt2 required.
 
     robot_command_node = TimerAction(
-        period=15.0,
+        period=8.0,
         actions=[
             LogInfo(msg='Starting robot command node...'),
             Node(
@@ -180,6 +148,7 @@ def generate_launch_description():
                     'stability_frames':     LaunchConfiguration('stability_frames'),
                     'command_cooldown':     LaunchConfiguration('command_cooldown'),
                     'ignore_no_action':     LaunchConfiguration('ignore_no_action'),
+                    'controller_topic':     LaunchConfiguration('controller_topic'),
                 }],
             ),
         ],
@@ -191,6 +160,7 @@ def generate_launch_description():
         launch_rviz_arg,
         robot_ip_arg,
         ur_type_arg,
+        controller_topic_arg,
         camera_topic_arg,
         confidence_threshold_arg,
         prediction_rate_arg,
@@ -200,8 +170,6 @@ def generate_launch_description():
         ignore_no_action_arg,
         # Infrastructure
         ur_control,
-        moveit_real,
-        moveit_sim,
         camera,
         # Application (delayed)
         classification_node,

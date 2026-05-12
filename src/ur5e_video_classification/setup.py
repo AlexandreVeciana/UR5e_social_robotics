@@ -27,8 +27,9 @@ setup(
         'console_scripts': [
             'video_classification_node = ur5e_video_classification.video_classification_node:main',
             'robot_command_node        = ur5e_video_classification.robot_command_node:main',
-            'ur5e_move_to_pose_exe     = ur5e_video_classification.ur5e_move_to_pose_exe:main',
-            'ur5e_move_to_joints_exe = ur5e_video_classification.ur5e_move_to_joints_exe:main',
+            # Standalone gesture tester — run a single YAML directly without the prediction pipeline:
+            #   ros2 run ur5e_video_classification ur5e_trajectory_runner <path_to_yaml>
+            'ur5e_trajectory_runner    = ur5e_video_classification.ur5e_trajectory_runner:main',
         ],
     },
 )
