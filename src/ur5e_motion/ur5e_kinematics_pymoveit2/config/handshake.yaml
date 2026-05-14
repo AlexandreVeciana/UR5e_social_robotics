@@ -1,0 +1,50 @@
+common:
+  execute: true
+  group_name: ur_manipulator
+  ik_link: tool0
+
+  target_frame: table
+  planning_frame: base_link
+
+  max_velocity: 0.1
+  max_acceleration: 0.1
+  ik_timeout_sec: 1.0
+  print_joints: true
+
+steps:
+  - name: home_start
+    target_xyz: [0, -400, 500]
+    target_rpy: [90.0, 0.0, 0.0]
+    seed_from_joint_states: false
+    seed_joints: [30, -130, 140, -180, -30, 180]
+    duration: 4.0
+    sleep_after: 1.0
+
+  - name: approach_handshake
+    target_xyz: [-250, -350, 300]
+    target_rpy: [90.0, 0.0, 0.0]
+    seed_from_joint_states: true
+    duration: 4.0
+    sleep_after: 1.0
+
+  - name: handshake
+    target_xyz: [-250, -350, 200]
+    target_rpy: [90.0, 0.0, 0.0]
+    seed_from_joint_states: true
+    duration: 4.0
+    sleep_after: 1.0
+
+  - name: retreat_handshake
+    target_xyz: [-250, -350, 300]
+    target_rpy: [90.0, 0.0, 0.0]
+    seed_from_joint_states: true
+    duration: 4.0 
+    sleep_after: 1.0
+
+  - name: home_end
+    target_xyz: [0, -400, 500]
+    target_rpy: [90.0, 0.0, 0.0]
+    seed_from_joint_states: false
+    seed_joints: [30, -130, 140, -180, -30, 180]
+    duration: 4.0
+    sleep_after: 1.0
