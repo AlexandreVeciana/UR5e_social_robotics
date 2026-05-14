@@ -1,0 +1,45 @@
+common:
+  execute: true
+  group_name: ur_manipulator
+  ik_link: tool0
+
+  target_frame: table
+  planning_frame: base_link
+
+  max_velocity: 0.1
+  max_acceleration: 0.1
+  ik_timeout_sec: 1.0
+  print_joints: true
+
+steps:
+  - name: home
+    target_xyz: [138.0, -500.0, 500.0]
+    target_rpy: [90.0, 0.0, 0.0]
+    seed_from_joint_states: false
+    seed_joints: [90.0, -90.0, 90.0, 0.0, 90.0, 0.0]
+    duration: 3.0
+
+  - name: bow_prepare
+    target_xyz: [228.0, -410.0, 500.0]
+    target_rpy: [90.0, 0.0, 0.0]
+    seed_from_joint_states: true
+    duration: 3.0
+
+  - name: bow_down
+    target_xyz: [218.0, -400.0, 170.0]
+    target_rpy: [110.0, 10.0, 10.0]
+    seed_from_joint_states: true
+    duration: 2.5
+    sleep_after: 1.5
+
+  - name: bow_up
+    target_xyz: [228.0, -530.0, 460.0]
+    target_rpy: [90.0, 0.0, 0.0]
+    seed_from_joint_states: true
+    duration: 4.0
+
+  - name: return_home
+    target_xyz: [138.0, -500.0, 500.0]
+    target_rpy: [90.0, 0.0, 0.0]
+    seed_from_joint_states: true
+    duration: 3.0
