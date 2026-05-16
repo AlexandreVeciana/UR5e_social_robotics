@@ -21,6 +21,8 @@ setup(
     entry_points={
         'console_scripts': [
             'ur5e_sequence_server = ur5e_motion_server.ur5e_sequence_server:main',
+            'ur5e_pose_server = ur5e_motion_server.ur5e_pose_server:main',
+            'ur5e_joint_server = ur5e_motion_server.ur5e_joint_server:main',
         ],
     },
 )
