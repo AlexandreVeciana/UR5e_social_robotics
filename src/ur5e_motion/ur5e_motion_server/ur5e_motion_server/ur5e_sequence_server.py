@@ -5,6 +5,7 @@ import subprocess
 
 import rclpy
 from rclpy.node import Node
+from ament_index_python.packages import get_package_share_directory
 
 from ur5e_interfaces.srv import RunSequence
 
@@ -14,9 +15,11 @@ class UR5eSequenceServer(Node):
     def __init__(self):
         super().__init__("ur5e_sequence_server")
 
+        package_share_dir = get_package_share_directory("ur5e_motion_server")
+
         self.declare_parameter(
             "sequences_dir",
-            "/home/ubuntu/ur5e_sequences"
+            os.path.join(package_share_dir, "config")
         )
 
         self.sequences_dir = self.get_parameter(
@@ -120,4 +123,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
+

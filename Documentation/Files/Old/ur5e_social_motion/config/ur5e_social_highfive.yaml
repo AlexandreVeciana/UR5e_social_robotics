@@ -1,0 +1,18 @@
+sequence:
+  - step_name: highfive_ready
+    target_xyz_mm: [450.0, -100.0, 800.0]
+    target_rpy_deg: [90.0, 0.0, 0.0]
+    seed_joints_deg: [15.0, -60.0, 85.0, -115.0, -90.0, 15.0]
+    execute: true
+    max_velocity_scale: 0.12
+    max_acceleration_scale: 0.12
+    print_joints: true
+
+  - step_name: highfive_touch
+    target_xyz_mm: [550.0, -50.0, 850.0]
+    target_rpy_deg: [90.0, 0.0, 0.0]
+    seed_joints_deg: [20.0, -55.0, 80.0, -115.0, -90.0, 20.0]
+    execute: true
+    max_velocity_scale: 0.10
+    max_acceleration_scale: 0.10
+    print_joints: true
