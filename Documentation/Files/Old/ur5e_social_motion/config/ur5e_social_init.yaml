@@ -1,0 +1,26 @@
+# Table frame convention:
+# - XYZ are expressed in mm
+# - RPY are expressed in degrees
+# - roll = 0   -> palm facing upward
+# - roll = 90  -> palm facing toward the human
+# - yaw = 0    -> high-five orientation
+# - yaw = 90   -> handshake orientation
+
+sequence:
+  - step_name: init_home
+    target_xyz_mm: [300.0, -200.0, 450.0]
+    target_rpy_deg: [0.0, 0.0, 90.0]
+    seed_joints_deg: [0.0, -90.0, 90.0, -90.0, -90.0, 0.0]
+    execute: true
+    max_velocity_scale: 0.15
+    max_acceleration_scale: 0.15
+    print_joints: true
+
+  - step_name: greet_ready
+    target_xyz_mm: [400.0, -150.0, 550.0]
+    target_rpy_deg: [0.0, 0.0, 90.0]
+    seed_joints_deg: [10.0, -80.0, 100.0, -110.0, -90.0, 10.0]
+    execute: true
+    max_velocity_scale: 0.15
+    max_acceleration_scale: 0.15
+    print_joints: true

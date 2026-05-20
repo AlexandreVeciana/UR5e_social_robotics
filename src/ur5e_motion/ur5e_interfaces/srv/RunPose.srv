@@ -1,0 +1,11 @@
+float64[3] target_xyz_mm
+float64[3] target_rpy_deg
+
+bool seed_from_joint_states
+float64[6] seed_joints_deg
+
+bool execute
+
+---
+bool success
+string message

@@ -1,0 +1,10 @@
+float64[6] joints_deg
+
+bool execute
+
+float64 max_velocity
+float64 max_acceleration
+
+---
+bool success
+string message
