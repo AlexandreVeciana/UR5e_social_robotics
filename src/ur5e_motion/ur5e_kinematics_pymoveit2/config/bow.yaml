@@ -16,30 +16,34 @@ steps:
     target_xyz: [138.0, -500.0, 500.0]
     target_rpy: [90.0, 0.0, 0.0]
     seed_from_joint_states: false
-    seed_joints: [90.0, -90.0, 90.0, 0.0, 90.0, 0.0]
+    seed_joints: [90.0, -90.0, 90.0, 0.0, 90.0, 1.0]
     duration: 3.0
 
   - name: bow_prepare
     target_xyz: [228.0, -410.0, 500.0]
     target_rpy: [90.0, 0.0, 0.0]
-    seed_from_joint_states: true
+    seed_from_joint_states: false
+    seed_joints: [106.0, -94.0, 92.0, 2.0, 106.0, 1.0]
     duration: 3.0
 
   - name: bow_down
     target_xyz: [218.0, -400.0, 170.0]
     target_rpy: [110.0, 10.0, 10.0]
-    seed_from_joint_states: true
+    seed_from_joint_states: false
+    seed_joints: [102.0, -76.0, 121.0, -25.0, 96.0, -8.0]
     duration: 2.5
-    sleep_after: 1.5
+    sleep_after: 1.5   
 
   - name: bow_up
     target_xyz: [228.0, -530.0, 460.0]
     target_rpy: [90.0, 0.0, 0.0]
-    seed_from_joint_states: true
+    seed_from_joint_states: false
+    seed_joints: [102.0, -79.0, 82.0, -3.0, 102.0, 1.0]
     duration: 4.0
 
   - name: return_home
     target_xyz: [138.0, -500.0, 500.0]
     target_rpy: [90.0, 0.0, 0.0]
-    seed_from_joint_states: true
+    seed_from_joint_states: false
+    seed_joints: [90.0, -90.0, 90.0, 0.0, 90.0, 1.0]
     duration: 3.0
